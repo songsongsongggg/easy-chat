@@ -3,12 +3,10 @@ package main
 import (
 	"flag"
 	"fmt"
-
 	"github.com/songsongsongggg/easy-chat/apps/user/rpc/internal/config"
 	"github.com/songsongsongggg/easy-chat/apps/user/rpc/internal/server"
 	"github.com/songsongsongggg/easy-chat/apps/user/rpc/internal/svc"
 	"github.com/songsongsongggg/easy-chat/apps/user/rpc/user"
-
 	"github.com/zeromicro/go-zero/core/conf"
 	"github.com/zeromicro/go-zero/core/service"
 	"github.com/zeromicro/go-zero/zrpc"
