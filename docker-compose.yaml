@@ -2,18 +2,20 @@ version: '3'
 
 services:
   etcd:
-    image: bitnami/etcd:3.5
+    image: bitnami/etcd:3.5.15
     container_name: etcd
-    user: "1000:1000"  # wuzhisong 用户的 UID 和 GID
     ports:
-      - "3379:2379"
-      - "3380:2380"
+      - "2379:2379"
+      - "2380:2380"
     environment:
+      - ETCD_DEBUG=true
       - ETCD_ENABLE_V2=true
       - ALLOW_NONE_AUTHENTICATION=yes
-      - ETCD_ADVERTISE_CLIENT_URLS=http://172.16.240.24:3379
-      - ETCD_LISTEN_CLIENT_URLS=http://0.0.0.0:2379
       - ETCD_NAME=etcd
+      - ETCD_LISTEN_CLIENT_URLS=http://0.0.0.0:2379
+      - ETCD_ADVERTISE_CLIENT_URLS=http://172.16.240.24:2379
+      - ETCD_INITIAL_ADVERTISE_PEER_URLS=http://172.16.240.24:2380  # 新增
+      - ETCD_LISTEN_PEER_URLS=http://0.0.0.0:2380                   # 新增
     volumes:
       - ./components/etcd/data:/bitnami/etcd/data
       - ./components/etcd/logs:/bitnami/etcd/logs
@@ -34,7 +36,6 @@ services:
     networks:
       easy-chat:
     command: redis-server --requirepass easy-chat --appendonly yes
-    user: "1000:1000"  # 添加当前用户的 UID 和 GID
 
   mysql:
     image: mysql:8.0
@@ -49,7 +50,6 @@ services:
     restart: always
     networks:
       easy-chat:
-    user: "1000:1000"  # 添加当前用户的 UID 和 GID
 
 networks:
   easy-chat:
