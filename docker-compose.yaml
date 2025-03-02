@@ -5,17 +5,17 @@ services:
     image: bitnami/etcd:3.5.15
     container_name: etcd
     ports:
-      - "2379:2379"
-      - "2380:2380"
+      - "3379:2379"
+      - "3380:2380"
     environment:
       - ETCD_DEBUG=true
       - ETCD_ENABLE_V2=true
       - ALLOW_NONE_AUTHENTICATION=yes
       - ETCD_NAME=etcd
       - ETCD_LISTEN_CLIENT_URLS=http://0.0.0.0:2379
-      - ETCD_ADVERTISE_CLIENT_URLS=http://172.16.240.24:2379
-      - ETCD_INITIAL_ADVERTISE_PEER_URLS=http://172.16.240.24:2380  # 新增
-      - ETCD_LISTEN_PEER_URLS=http://0.0.0.0:2380                   # 新增
+      - ETCD_ADVERTISE_CLIENT_URLS=http://172.20.10.4:3379
+      - ETCD_INITIAL_ADVERTISE_PEER_URLS=http://172.20.10.4:2380
+      - ETCD_LISTEN_PEER_URLS=http://0.0.0.0:2380         
     volumes:
       - ./components/etcd/data:/bitnami/etcd/data
       - ./components/etcd/logs:/bitnami/etcd/logs
@@ -23,30 +23,40 @@ services:
       easy-chat:
 
   redis:
-    image: redis:alpine3.18
+    image: arm64v8/redis:alpine
     ports:
       - 16379:6379
     container_name: redis
     volumes:
       - ./components/redis/data:/data
-      - ./components/redis/config/redis.conf:/usr/local/redis/config/redis.conf
+      - ./components/redis/config/redis.conf:/usr/local/etc/redis/redis.conf
     environment:
       TZ: Asia/Shanghai
     restart: always
     networks:
       easy-chat:
-    command: redis-server --requirepass easy-chat --appendonly yes
+    command: redis-server /usr/local/etc/redis/redis.conf --requirepass easy-chat --appendonly yes
 
-  mysql:
-    image: mysql:8.0
+  mariadb:
+    image: mariadb:latest
+    container_name: mariadb
     ports:
-      - 13306:3306
-    container_name: mysql
+      - "13306:3306"
     volumes:
       - ./components/mysql/data:/var/lib/mysql
-      - /etc/localtime:/etc/localtime
     environment:
-      MYSQL_ROOT_PASSWORD: easy-chat
+      MARIADB_ROOT_PASSWORD: easy-chat
+      MARIADB_MYSQL_NATIVE_PASSWORD: 1
+    command: 
+      - --character-set-server=utf8mb4
+      - --collation-server=utf8mb4_unicode_ci
+      - --sql-mode=STRICT_TRANS_TABLES,NO_ENGINE_SUBSTITUTION
+      - --innodb-log-file-size=256M
+      - --innodb-buffer-pool-size=512M
+      - --log-bin=mysql-bin
+      - --server-id=1
+      - --binlog-format=ROW
+      - --bind-address=0.0.0.0
     restart: always
     networks:
       easy-chat:
