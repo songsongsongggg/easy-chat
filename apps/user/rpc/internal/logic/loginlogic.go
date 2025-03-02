@@ -2,10 +2,8 @@ package logic
 
 import (
 	"context"
-
 	"github.com/songsongsongggg/easy-chat/apps/user/rpc/internal/svc"
 	"github.com/songsongsongggg/easy-chat/apps/user/rpc/user"
-
 	"github.com/zeromicro/go-zero/core/logx"
 )
 
