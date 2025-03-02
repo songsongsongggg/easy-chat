@@ -89,7 +89,7 @@ func (m *defaultUsersModel) FindByPhone(ctx context.Context, phone string) (*Use
 	usersIdKey := fmt.Sprintf("%s%v", cacheUsersIdPrefix, phone)
 	var resp Users
 	err := m.QueryRowCtx(ctx, &resp, usersIdKey, func(ctx context.Context, conn sqlx.SqlConn, v any) error {
-		query := fmt.Sprintf("select %s from %s where `id` = ? limit 1", usersRows, m.table)
+		query := fmt.Sprintf("select %s from %s where `phone` = ? limit 1", usersRows, m.table)
 		return conn.QueryRowCtx(ctx, v, query, phone)
 	})
 	switch err {
