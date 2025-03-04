@@ -5,6 +5,7 @@ go 1.24.0
 require (
 	github.com/edwingeng/wuid v1.0.0
 	github.com/golang-jwt/jwt v3.2.2+incompatible
+	github.com/jinzhu/copier v0.4.0
 	github.com/zeromicro/go-zero v1.8.0
 	golang.org/x/crypto v0.32.0
 	google.golang.org/grpc v1.70.0
