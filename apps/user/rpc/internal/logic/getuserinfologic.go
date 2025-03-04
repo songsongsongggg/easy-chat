@@ -2,15 +2,16 @@ package logic
 
 import (
 	"context"
-	"errors"
 	"github.com/jinzhu/copier"
+	"github.com/pkg/errors"
 	"github.com/songsongsongggg/easy-chat/apps/user/models"
 	"github.com/songsongsongggg/easy-chat/apps/user/rpc/internal/svc"
 	"github.com/songsongsongggg/easy-chat/apps/user/rpc/user"
+	"github.com/songsongsongggg/easy-chat/pkg/xerr"
 	"github.com/zeromicro/go-zero/core/logx"
 )
 
-var ErrUserNotFound = errors.New("这个用户没有")
+var ErrUserNotFound = xerr.New(xerr.SERVER_COMMON_ERROR, "查询不到这个用户")
 
 type GetUserInfoLogic struct {
 	ctx    context.Context
@@ -27,14 +28,13 @@ func NewGetUserInfoLogic(ctx context.Context, svcCtx *svc.ServiceContext) *GetUs
 }
 
 func (l *GetUserInfoLogic) GetUserInfo(in *user.GetUserInfoReq) (*user.GetUserInfoResp, error) {
-	// todo: add your logic here and delete this line
 
 	userEntiy, err := l.svcCtx.UsersModel.FindOne(l.ctx, in.Id)
 	if err != nil {
 		if err == models.ErrNotFound {
-			return nil, ErrUserNotFound
+			return nil, errors.WithStack(ErrUserNotFound)
 		}
-		return nil, err
+		return nil, errors.Wrapf(xerr.NewDBErr(), "getUserInfo user by id err %v , req %v", err, in.Id)
 	}
 
 	var resp user.UserEntity

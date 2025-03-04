@@ -3,7 +3,9 @@ package logic
 import (
 	"context"
 	"github.com/jinzhu/copier"
+	"github.com/pkg/errors"
 	"github.com/songsongsongggg/easy-chat/apps/user/models"
+	"github.com/songsongsongggg/easy-chat/pkg/xerr"
 
 	"github.com/songsongsongggg/easy-chat/apps/user/rpc/internal/svc"
 	"github.com/songsongsongggg/easy-chat/apps/user/rpc/user"
@@ -26,7 +28,7 @@ func NewFindUserLogic(ctx context.Context, svcCtx *svc.ServiceContext) *FindUser
 }
 
 func (l *FindUserLogic) FindUser(in *user.FindUserReq) (*user.FindUserResp, error) {
-	// todo: add your logic here and delete this line
+
 	var (
 		userEntitys []*models.Users
 		err         error
@@ -44,7 +46,7 @@ func (l *FindUserLogic) FindUser(in *user.FindUserReq) (*user.FindUserResp, erro
 	}
 
 	if err != nil {
-		return nil, err
+		return nil, errors.Wrapf(xerr.NewDBErr(), "findUser user by Phone err %v , req %v", err, in.Phone)
 	}
 
 	var resp []*user.UserEntity

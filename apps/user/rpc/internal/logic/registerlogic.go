@@ -3,19 +3,20 @@ package logic
 import (
 	"context"
 	"database/sql"
-	"errors"
+	"github.com/pkg/errors"
 	"github.com/songsongsongggg/easy-chat/apps/user/models"
 	"github.com/songsongsongggg/easy-chat/apps/user/rpc/internal/svc"
 	"github.com/songsongsongggg/easy-chat/apps/user/rpc/user"
 	"github.com/songsongsongggg/easy-chat/pkg/ctxdata"
 	"github.com/songsongsongggg/easy-chat/pkg/encrypt"
 	"github.com/songsongsongggg/easy-chat/pkg/wuid"
+	"github.com/songsongsongggg/easy-chat/pkg/xerr"
 	"github.com/zeromicro/go-zero/core/logx"
 	"time"
 )
 
 var (
-	ErrPhoneIsRegister = errors.New("手机号已经注册过")
+	ErrPhoneIsRegister = xerr.New(xerr.SERVER_COMMON_ERROR, "手机号已经注册过")
 )
 
 type RegisterLogic struct {
@@ -33,16 +34,15 @@ func NewRegisterLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Register
 }
 
 func (l *RegisterLogic) Register(in *user.RegisterReq) (*user.RegisterResp, error) {
-	// todo: add your logic here and delete this line
 
 	// 1. 验证用户是否注册，根据手机号码验证
 	userEntity, err := l.svcCtx.UsersModel.FindByPhone(l.ctx, in.Phone)
 	if err != nil && err != models.ErrNotFound {
-		return nil, err
+		return nil, errors.Wrapf(xerr.NewDBErr(), "register user by Phone err %v , req %v", err, in.Phone)
 	}
 
 	if userEntity != nil {
-		return nil, ErrPhoneIsRegister
+		return nil, errors.WithStack(ErrPhoneIsRegister)
 	}
 
 	// 定义用户数据
