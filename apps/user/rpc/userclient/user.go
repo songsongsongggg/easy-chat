@@ -6,9 +6,7 @@ package userclient
 
 import (
 	"context"
-
 	"github.com/songsongsongggg/easy-chat/apps/user/rpc/user"
-
 	"github.com/zeromicro/go-zero/zrpc"
 	"google.golang.org/grpc"
 )
