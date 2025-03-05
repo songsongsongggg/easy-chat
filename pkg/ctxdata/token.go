@@ -7,7 +7,7 @@ package ctxdata
 
 import "github.com/golang-jwt/jwt"
 
-const Identify = "im-easy-chat"
+const Identify = "social-easy-chat"
 
 func GetJwtToken(secretKey string, iat, seconds int64, uid string) (string, error) {
 	claims := make(jwt.MapClaims)

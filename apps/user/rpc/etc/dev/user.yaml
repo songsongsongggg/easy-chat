@@ -2,7 +2,7 @@ Name: user.rpc
 ListenOn: 0.0.0.0:10000
 Etcd:
   Hosts:
-    - http://172.20.10.4:3379
+    - 172.20.10.4:3379
   Key: user.rpc
 
 Mysql:

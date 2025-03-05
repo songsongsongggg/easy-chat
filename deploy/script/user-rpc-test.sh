@@ -19,5 +19,5 @@ docker network inspect ${network_name} >/dev/null 2>&1 || docker network create 
 
 
 # 如果需要指定配置文件的
-# docker run -p 10001:8080 --network imooc_easy-im -v /easy-im/config/user-rpc:/user/conf/ --name=${container_name} -d ${reso_addr}:${tag}
+# docker run -p 10001:8080 --network imooc_easy-social -v /easy-social/config/user-rpc:/user/conf/ --name=${container_name} -d ${reso_addr}:${tag}
 docker run -p 10000:10000 --network ${network_name} --name=${container_name} -d ${reso_addr}:${tag}
